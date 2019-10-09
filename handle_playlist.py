@@ -28,6 +28,7 @@ YOUTUBE = discovery.build('youtube', 'v3', http=creds.authorize(Http()))
 youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION,
                     http=creds.authorize(httplib2.Http()))
 
+# プレイリスト上の動画Idを取得
 def search_playlistitems(Id):
     search_response = youtube.playlistItems().list(
         part="snippet",
@@ -37,12 +38,13 @@ def search_playlistitems(Id):
 
     return [search_response["items"][i]["id"]for i in range(len(search_response["items"]))]
 
+# 動画をプレイリストから削除
 def reset_playlist(Id):
     youtube.playlistItems().delete(id=Id).execute()
     # print(reset_response.get("id"))
     print("deleted:{0}".format(Id))
 
-
+# プレイリストに動画を追加
 def insert_resource(playlistId, videoId):
     insert_response = youtube.playlistItems().insert(
         part="snippet",
@@ -56,7 +58,7 @@ def insert_resource(playlistId, videoId):
         )
     ).execute()
 
-
+# プレイリストを作成
 def create_playlists(category):
     create_response = youtube.playlists().insert(
         part="snippet,status",
@@ -75,7 +77,6 @@ def create_playlists(category):
 
 
 if __name__ == "__main__":
-    # quotaの割り当ては17時にリセット
     categories = ["洋楽"]
     for i in categories:
         response = create_playlists(i)
